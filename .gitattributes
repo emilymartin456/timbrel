@@ -1,0 +1,9 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Treat notebooks and binary assets sensibly
+*.ipynb text
+*.wav binary
+*.pt binary
+*.pth binary
+*.npy binary
