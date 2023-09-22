@@ -1,0 +1,21 @@
+line-length = 100
+target-version = "py39"
+
+[lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "NPY"]
+ignore = [
+    "E501",   # line length handled by the formatter
+    "B008",   # allow calls in argument defaults (config factories)
+    "SIM108", # ternary is not always clearer
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["B", "SIM"]
+"examples/*" = ["B", "SIM", "E402"]
+"timbrel/__init__.py" = ["F401"]
+
+[lint.isort]
+known-first-party = ["timbrel"]
+
+[format]
+quote-style = "double"
