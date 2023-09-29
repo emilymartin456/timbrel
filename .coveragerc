@@ -1,0 +1,14 @@
+[run]
+source = timbrel
+branch = True
+omit =
+    timbrel/trainer.py
+    timbrel/cli.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+    if TYPE_CHECKING:
+    def __repr__
+show_missing = True
