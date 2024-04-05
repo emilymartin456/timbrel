@@ -32,3 +32,24 @@ class ConditionalLayerNorm(nn.Module):
         gamma = self.scale(cond).unsqueeze(1)  # (B, 1, C), starts near 0
         beta = self.bias(cond).unsqueeze(1)
         return normed * (1.0 + gamma) + beta
+
+
+class FiLM(nn.Module):
+    """Feature-wise linear modulation from a conditioning vector.
+
+    Unlike :class:`ConditionalLayerNorm` this does not normalise; it just
+    applies an affine ``x * (1 + gamma) + beta`` where the parameters come from
+    a conditioning vector (here, the prosody embedding).
+    """
+
+    def __init__(self, cond_dim: int, feature_dim: int) -> None:
+        super().__init__()
+        self.proj = LinearNorm(cond_dim, 2 * feature_dim)
+
+    def affine_params(self, cond: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        gamma, beta = self.proj(cond).chunk(2, dim=-1)
+        return gamma, beta
+
+    def forward(self, x: torch.Tensor, cond: torch.Tensor) -> torch.Tensor:
+        gamma, beta = self.affine_params(cond)
+        return x * (1.0 + gamma.unsqueeze(1)) + beta.unsqueeze(1)
