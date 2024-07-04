@@ -124,7 +124,9 @@ class VarianceAdaptor(nn.Module):
 
         if durations is None:
             durations = torch.clamp(torch.round(torch.exp(log_duration) - 1.0), min=0).long()
-            durations = durations.masked_fill(src_mask, 0)
+        # zero out durations at padded phoneme positions so padding never
+        # leaks frames into the regulated output (applies to GT durations too)
+        durations = durations.masked_fill(src_mask, 0)
 
         expanded, mel_lengths = self.length_regulator(x, durations, max_len)
         stats = {
