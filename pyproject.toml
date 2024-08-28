@@ -54,6 +54,9 @@ Homepage = "https://github.com/emilymartin456/timbrel"
 Repository = "https://github.com/emilymartin456/timbrel"
 Issues = "https://github.com/emilymartin456/timbrel/issues"
 
+[project.scripts]
+timbrel = "timbrel.cli:main"
+
 [tool.hatch.version]
 path = "timbrel/version.py"
 
