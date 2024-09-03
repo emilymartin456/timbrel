@@ -7,7 +7,7 @@ so it stays on the unit sphere, consistent with the speaker encoder's output.
 
 from __future__ import annotations
 
-from typing import Sequence
+from collections.abc import Sequence
 
 import torch
 import torch.nn.functional as F

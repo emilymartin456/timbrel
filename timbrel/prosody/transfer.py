@@ -8,8 +8,6 @@ embedding (timbre) comes from a different *timbre reference*.
 
 from __future__ import annotations
 
-from typing import Optional
-
 import torch
 
 from timbrel.models.acoustic import AcousticModel
@@ -22,8 +20,8 @@ def transfer_prosody(
     src_lengths: torch.Tensor,
     timbre_ref_mel: torch.Tensor,
     prosody_ref_mel: torch.Tensor,
-    timbre_ref_lengths: Optional[torch.Tensor] = None,
-    prosody_ref_lengths: Optional[torch.Tensor] = None,
+    timbre_ref_lengths: torch.Tensor | None = None,
+    prosody_ref_lengths: torch.Tensor | None = None,
 ) -> torch.Tensor:
     """Return a mel-spectrogram with ``timbre_ref``'s voice and ``prosody_ref``'s prosody."""
     mel, _ = model.infer(

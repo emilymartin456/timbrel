@@ -9,7 +9,7 @@ maps text plus a reference mel to a predicted mel-spectrogram. A neural vocoder
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 
 import torch
 
@@ -27,15 +27,15 @@ class Synthesizer:
     def __init__(
         self,
         model: AcousticModel,
-        frontend: Optional[BilingualFrontend] = None,
-        config: Optional[Config] = None,
+        frontend: BilingualFrontend | None = None,
+        config: Config | None = None,
     ) -> None:
         self.model = model
         self.config = config or Config()
         self.frontend = frontend or BilingualFrontend(PhonemeVocab(), self.config.frontend)
 
     @staticmethod
-    def _batchify(mel: Optional[torch.Tensor]) -> Optional[torch.Tensor]:
+    def _batchify(mel: torch.Tensor | None) -> torch.Tensor | None:
         if mel is None:
             return None
         return mel if mel.dim() == 3 else mel.unsqueeze(0)
@@ -45,8 +45,8 @@ class Synthesizer:
         self,
         text: str,
         ref_mel: torch.Tensor,
-        language: Optional[str] = None,
-        prosody_ref_mel: Optional[torch.Tensor] = None,
+        language: str | None = None,
+        prosody_ref_mel: torch.Tensor | None = None,
     ) -> torch.Tensor:
         ids = self.frontend.encode(text, language)
         if not ids:
@@ -62,7 +62,7 @@ class Synthesizer:
         return mel.squeeze(0)
 
     @classmethod
-    def from_checkpoint(cls, path: PathLike, map_location: str = "cpu") -> "Synthesizer":
+    def from_checkpoint(cls, path: PathLike, map_location: str = "cpu") -> Synthesizer:
         ckpt = torch.load(path, map_location=map_location)
         config = Config.from_dict(ckpt["config"]) if "config" in ckpt else Config()
         model = AcousticModel(config.model)

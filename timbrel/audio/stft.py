@@ -7,8 +7,6 @@ devices.
 
 from __future__ import annotations
 
-from typing import Optional
-
 import torch
 from torch import nn
 
@@ -19,7 +17,7 @@ from timbrel.config import AudioConfig
 class MelSpectrogram(nn.Module):
     """Waveform ``(B, T)`` -> log-mel ``(B, n_mels, frames)``."""
 
-    def __init__(self, config: Optional[AudioConfig] = None) -> None:
+    def __init__(self, config: AudioConfig | None = None) -> None:
         super().__init__()
         self.config = config or AudioConfig()
         fb = mel_filterbank(

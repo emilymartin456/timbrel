@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import random
-from typing import Optional, Sequence
+from collections.abc import Sequence
 
 import numpy as np
 import torch
@@ -12,14 +12,14 @@ import torch
 def seed_everything(seed: int = 1234) -> None:
     """Seed python, numpy and torch RNGs for reproducible experiments."""
     random.seed(seed)
-    np.random.seed(seed)
+    np.random.seed(seed)  # noqa: NPY002 - deliberate global seeding for reproducibility
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 
 
 def get_mask_from_lengths(
-    lengths: torch.Tensor, max_len: Optional[int] = None
+    lengths: torch.Tensor, max_len: int | None = None
 ) -> torch.Tensor:
     """Build a padding mask from a batch of sequence lengths.
 
