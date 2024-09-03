@@ -22,7 +22,9 @@ def _masked_l1(pred: torch.Tensor, target: torch.Tensor, pad_mask: torch.Tensor)
     return diff.sum() / valid.sum().clamp(min=1.0)
 
 
-def _masked_mse_1d(pred: torch.Tensor, target: torch.Tensor, pad_mask: torch.Tensor) -> torch.Tensor:
+def _masked_mse_1d(
+    pred: torch.Tensor, target: torch.Tensor, pad_mask: torch.Tensor
+) -> torch.Tensor:
     valid = (~pad_mask).to(pred.dtype)
     diff = ((pred - target) ** 2) * valid
     return diff.sum() / valid.sum().clamp(min=1.0)

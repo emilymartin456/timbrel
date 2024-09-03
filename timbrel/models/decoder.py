@@ -51,7 +51,9 @@ class DecoderBlock(nn.Module):
 class PostNet(nn.Module):
     """5-layer conv post-net refining the coarse mel prediction (residual)."""
 
-    def __init__(self, n_mels: int, channels: int = 256, kernel_size: int = 5, n_layers: int = 5) -> None:
+    def __init__(
+        self, n_mels: int, channels: int = 256, kernel_size: int = 5, n_layers: int = 5
+    ) -> None:
         super().__init__()
         self.convs = nn.ModuleList()
         for i in range(n_layers):
