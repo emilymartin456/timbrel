@@ -7,11 +7,11 @@ import numpy as np
 _EPS = 1e-8
 
 
-def hz_to_mel(hz: np.ndarray | float) -> np.ndarray | float:
+def hz_to_mel(hz: np.ndarray | float) -> np.ndarray:
     return 2595.0 * np.log10(1.0 + np.asarray(hz, dtype=np.float64) / 700.0)
 
 
-def mel_to_hz(mel: np.ndarray | float) -> np.ndarray | float:
+def mel_to_hz(mel: np.ndarray | float) -> np.ndarray:
     return 700.0 * (10.0 ** (np.asarray(mel, dtype=np.float64) / 2595.0) - 1.0)
 
 

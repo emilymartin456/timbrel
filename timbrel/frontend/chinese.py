@@ -69,7 +69,7 @@ class ChineseG2P:
             style=Style.TONE3,
             strict=False,
             neutral_tone_with_five=True,
-            errors=lambda chars: list(chars),
+            errors="default",
         )
         return [item[0] for item in pys]
 

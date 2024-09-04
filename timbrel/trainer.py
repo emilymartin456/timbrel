@@ -29,7 +29,7 @@ class Trainer:
         self.optimizer = torch.optim.AdamW(
             model.parameters(),
             lr=tc.lr,
-            betas=tuple(tc.betas),
+            betas=(tc.betas[0], tc.betas[1]),
             weight_decay=tc.weight_decay,
         )
         self.step = 0
