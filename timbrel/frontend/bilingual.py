@@ -29,6 +29,16 @@ def _collapse_pauses(phones: list[str]) -> list[str]:
     return out
 
 
+def _strip_edge_pauses(phones: list[str]) -> list[str]:
+    """Drop leading/trailing pause tokens so an utterance never starts on one."""
+    start, end = 0, len(phones)
+    while start < end and phones[start] in (SP, SIL):
+        start += 1
+    while end > start and phones[end - 1] in (SP, SIL):
+        end -= 1
+    return phones[start:end]
+
+
 class BilingualFrontend:
     """Turn arbitrary zh/en text into phonemes (symbols or ids)."""
 
@@ -57,22 +67,24 @@ class BilingualFrontend:
         return out
 
     def to_phonemes(self, text: str, language: str | None = None) -> list[str]:
+        if not text or not text.strip():
+            return []
         language = language or self.config.language
         if language in ("zh", "en"):
             text = normalize(text, language)
             g2p = self.zh if language == "zh" else self.en
-            return _collapse_pauses(g2p.to_phonemes(text))
-
-        text = normalize(text, "auto")
-        phones: list[str] = []
-        for lang, chunk in segment(text):
-            if lang == "zh":
-                phones.extend(self.zh.to_phonemes(chunk))
-            elif lang == "en":
-                phones.extend(self.en.to_phonemes(chunk))
-            else:
-                phones.extend(self._punct_to_pause(chunk))
-        return _collapse_pauses(phones)
+            phones = g2p.to_phonemes(text)
+        else:
+            text = normalize(text, "auto")
+            phones = []
+            for lang, chunk in segment(text):
+                if lang == "zh":
+                    phones.extend(self.zh.to_phonemes(chunk))
+                elif lang == "en":
+                    phones.extend(self.en.to_phonemes(chunk))
+                else:
+                    phones.extend(self._punct_to_pause(chunk))
+        return _strip_edge_pauses(_collapse_pauses(phones))
 
     def encode(
         self,
