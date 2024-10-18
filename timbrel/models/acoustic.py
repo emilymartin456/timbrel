@@ -15,8 +15,6 @@ and prosody representations.
 
 from __future__ import annotations
 
-import math  # noqa: F401  (kept during bring-up; removed in a later cleanup)
-
 import torch
 from torch import nn
 
@@ -53,7 +51,6 @@ class AcousticModel(nn.Module):
         self.content_speaker_clf = SpeakerClassifier(config.hidden, config.n_speakers)
         self.prosody_speaker_clf = SpeakerClassifier(config.prosody_dim, config.n_speakers)
         self.club = CLUBEstimator(config.hidden, config.speaker_dim) if config.use_club else None
-        self._debug = False  # bring-up switch; removed in a later cleanup
 
     def _condition(
         self, content: torch.Tensor, gamma: torch.Tensor, beta: torch.Tensor, src_mask: torch.Tensor
@@ -87,8 +84,6 @@ class AcousticModel(nn.Module):
         mel, postnet_mel = self.decoder(expanded, speaker, mel_mask)
 
         content_pooled = _masked_mean(content, src_mask)
-        # if self._debug:
-        #     print("content", content.shape, "speaker", speaker.shape)
         out = {
             "mel": mel,
             "postnet_mel": postnet_mel,
