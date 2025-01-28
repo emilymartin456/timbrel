@@ -6,6 +6,15 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-07-05
+
+### Added
+
+- Few-shot speaker enrollment and a conditional-LayerNorm fine-tuning adapter.
+- Prosody transfer (timbre from one reference, prosody from another).
+- Speech dataset/collate, high-level `Synthesizer.clone`, CLI and `Trainer`.
+- Documentation (architecture / usage / design notes / API) and runnable examples.
+
 ## [0.0.2]
 
 ### Added
