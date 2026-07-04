@@ -55,7 +55,7 @@ class ConvNorm(nn.Module):
             bias=bias,
         )
         nn.init.xavier_uniform_(self.conv.weight, gain=nn.init.calculate_gain(w_init_gain))
-        if bias:
+        if self.conv.bias is not None:
             nn.init.zeros_(self.conv.bias)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:

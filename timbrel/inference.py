@@ -53,10 +53,11 @@ class Synthesizer:
             raise ValueError("text produced no phonemes")
         phonemes = torch.tensor([ids], dtype=torch.long)
         src_lengths = torch.tensor([len(ids)], dtype=torch.long)
+        ref = ref_mel if ref_mel.dim() == 3 else ref_mel.unsqueeze(0)
         mel, _ = self.model.infer(
             phonemes,
             src_lengths,
-            self._batchify(ref_mel),
+            ref,
             prosody_ref_mel=self._batchify(prosody_ref_mel),
         )
         return mel.squeeze(0)
