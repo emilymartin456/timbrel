@@ -6,7 +6,8 @@ import torch
 from torch import nn
 
 from timbrel.config import ModelConfig
-from timbrel.models.layers import FFTBlock, PositionalEncoding
+from timbrel.models.attention import FFTBlock
+from timbrel.models.layers import PositionalEncoding
 
 
 class TextEncoder(nn.Module):
