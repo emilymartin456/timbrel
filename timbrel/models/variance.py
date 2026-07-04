@@ -5,6 +5,7 @@ from __future__ import annotations
 import torch
 from torch import nn
 
+from timbrel.config import ModelConfig
 from timbrel.models.layers import ConvNorm, LinearNorm
 
 
@@ -71,3 +72,66 @@ class LengthRegulator(nn.Module):
         for i, seq in enumerate(expanded):
             out[i, : seq.shape[0]] = seq[:target]
         return out, torch.tensor(lengths, device=x.device, dtype=torch.long)
+
+
+class VarianceEmbedding(nn.Module):
+    """Bucketise a scalar sequence into bins and embed it."""
+
+    def __init__(self, n_bins: int, hidden: int, v_min: float, v_max: float) -> None:
+        super().__init__()
+        self.register_buffer("bins", torch.linspace(v_min, v_max, n_bins - 1))
+        self.embed = nn.Embedding(n_bins, hidden)
+
+    def forward(self, values: torch.Tensor) -> torch.Tensor:
+        idx = torch.bucketize(values, self.bins)
+        return self.embed(idx)
+
+
+class VarianceAdaptor(nn.Module):
+    """Predict duration/pitch/energy and expand phoneme features to frames.
+
+    Pitch and energy are predicted at the *phoneme* level (FastPitch-style),
+    embedded through learned bins and added back before length regulation.
+    Ground-truth values, when supplied, are used for teacher forcing.
+    """
+
+    def __init__(self, config: ModelConfig) -> None:
+        super().__init__()
+        h = config.hidden
+        self.duration_predictor = DurationPredictor(h)
+        self.pitch_predictor = VariancePredictor(h)
+        self.energy_predictor = VariancePredictor(h)
+        self.pitch_embed = VarianceEmbedding(config.variance_bins, h, config.pitch_min, config.pitch_max)
+        self.energy_embed = VarianceEmbedding(config.variance_bins, h, config.energy_min, config.energy_max)
+        self.length_regulator = LengthRegulator()
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        src_mask: torch.Tensor,
+        durations: torch.Tensor | None = None,
+        pitch: torch.Tensor | None = None,
+        energy: torch.Tensor | None = None,
+        max_len: int | None = None,
+    ) -> tuple[torch.Tensor, dict]:
+        log_duration = self.duration_predictor(x, src_mask)
+        pitch_pred = self.pitch_predictor(x, src_mask)
+        energy_pred = self.energy_predictor(x, src_mask)
+
+        pitch_target = pitch if pitch is not None else pitch_pred
+        energy_target = energy if energy is not None else energy_pred
+        x = x + self.pitch_embed(pitch_target) + self.energy_embed(energy_target)
+
+        if durations is None:
+            durations = torch.clamp(torch.round(torch.exp(log_duration) - 1.0), min=0).long()
+            durations = durations.masked_fill(src_mask, 0)
+
+        expanded, mel_lengths = self.length_regulator(x, durations, max_len)
+        stats = {
+            "log_duration": log_duration,
+            "pitch": pitch_pred,
+            "energy": energy_pred,
+            "durations": durations,
+            "mel_lengths": mel_lengths,
+        }
+        return expanded, stats
