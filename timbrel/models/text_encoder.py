@@ -29,6 +29,9 @@ class TextEncoder(nn.Module):
                 for _ in range(config.n_enc_layers)
             ]
         )
+        # instance norm removes utterance-level statistics -> a step towards a
+        # speaker-invariant content bottleneck (AdaIN-VC style)
+        self.content_norm = nn.InstanceNorm1d(config.hidden, affine=False)
 
     def forward(
         self, tokens: torch.Tensor, key_padding_mask: torch.Tensor | None = None
@@ -37,4 +40,7 @@ class TextEncoder(nn.Module):
         x = self.dropout(self.pos(x))
         for layer in self.layers:
             x = layer(x, key_padding_mask)
+        x = self.content_norm(x.transpose(1, 2)).transpose(1, 2)
+        if key_padding_mask is not None:
+            x = x.masked_fill(key_padding_mask.unsqueeze(-1), 0.0)
         return x
