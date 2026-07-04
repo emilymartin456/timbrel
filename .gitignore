@@ -1,0 +1,44 @@
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Packaging / build
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Data & model artifacts (never commit large binaries)
+*.wav
+*.flac
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+runs/
+logs/
+outputs/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
