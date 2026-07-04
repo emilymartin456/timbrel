@@ -33,7 +33,7 @@ classifiers = [
 ]
 dependencies = [
   "torch>=2.1",
-  "numpy>=1.23,<2",
+  "numpy>=1.23,<3",
   "pypinyin>=0.49",
   "pyyaml>=6.0",
 ]
