@@ -21,6 +21,22 @@ _PAUSE_PUNCT = set("，、,;:")
 _STOP_PUNCT = set("。！？!?.…")
 
 
+def _apply_third_tone_sandhi(syllables: list[str]) -> list[str]:
+    """Lower every non-final third tone in a run of third tones to a rising tone.
+
+    ``3 3`` -> ``2 3`` and ``3 3 3`` -> ``2 2 3``. This is the common
+    approximation; genuine sandhi is prosodically conditioned, but this rule
+    covers the majority of two/three-syllable words. Handled left-to-right.
+    """
+    out = list(syllables)
+    tones = [s[-1] if s and s[-1] in "12345" else None for s in out]
+    for i in range(len(out) - 1):
+        if tones[i] == "3" and tones[i + 1] == "3":
+            out[i] = out[i][:-1] + "2"
+            tones[i] = "2"
+    return out
+
+
 def _split_syllable(syllable: str) -> list[str]:
     """Split a tone-3 pinyin syllable into ``[initial, final+tone]`` phones."""
     match = _SYLLABLE_RE.match(syllable)
@@ -59,8 +75,8 @@ class ChineseG2P:
 
     def to_phonemes(self, text: str) -> list[str]:
         phones: list[str] = []
-        # TODO: apply third-tone sandhi before splitting syllables
-        for token in self._syllables(text):
+        syllables = _apply_third_tone_sandhi(self._syllables(text))
+        for token in syllables:
             split = _split_syllable(token)
             if split:
                 phones.extend(split)
