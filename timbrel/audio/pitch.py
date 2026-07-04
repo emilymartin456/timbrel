@@ -6,7 +6,7 @@ for building phoneme-level prosody targets offline, and dependency-free.
 
 from __future__ import annotations
 
-from typing import Optional, Sequence
+from collections.abc import Sequence
 
 import numpy as np
 
@@ -21,7 +21,7 @@ def extract_f0(
     wav: np.ndarray,
     sample_rate: int,
     hop_length: int,
-    frame_length: Optional[int] = None,
+    frame_length: int | None = None,
     fmin: float = 50.0,
     fmax: float = 600.0,
     voicing_threshold: float = 0.3,

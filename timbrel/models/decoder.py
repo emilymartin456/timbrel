@@ -7,7 +7,13 @@ from torch import nn
 
 from timbrel.config import ModelConfig
 from timbrel.models.condln import ConditionalLayerNorm
-from timbrel.models.layers import ConvFFN, ConvNorm, LinearNorm, MultiHeadAttention, PositionalEncoding
+from timbrel.models.layers import (
+    ConvFFN,
+    ConvNorm,
+    LinearNorm,
+    MultiHeadAttention,
+    PositionalEncoding,
+)
 
 
 class DecoderBlock(nn.Module):

@@ -6,8 +6,6 @@ flat list of phoneme symbols or their integer ids under a :class:`PhonemeVocab`.
 
 from __future__ import annotations
 
-from typing import Optional
-
 from timbrel.config import FrontendConfig
 from timbrel.frontend.chinese import ChineseG2P
 from timbrel.frontend.english import EnglishG2P
@@ -36,8 +34,8 @@ class BilingualFrontend:
 
     def __init__(
         self,
-        vocab: Optional[PhonemeVocab] = None,
-        config: Optional[FrontendConfig] = None,
+        vocab: PhonemeVocab | None = None,
+        config: FrontendConfig | None = None,
     ) -> None:
         self.config = config or FrontendConfig()
         self.vocab = vocab or PhonemeVocab()
@@ -58,7 +56,7 @@ class BilingualFrontend:
                 out.append(SP)
         return out
 
-    def to_phonemes(self, text: str, language: Optional[str] = None) -> list[str]:
+    def to_phonemes(self, text: str, language: str | None = None) -> list[str]:
         language = language or self.config.language
         if language in ("zh", "en"):
             text = normalize(text, language)
@@ -79,13 +77,13 @@ class BilingualFrontend:
     def encode(
         self,
         text: str,
-        language: Optional[str] = None,
-        add_bos_eos: Optional[bool] = None,
+        language: str | None = None,
+        add_bos_eos: bool | None = None,
     ) -> list[int]:
         if add_bos_eos is None:
             add_bos_eos = self.config.add_bos_eos
         phones = self.to_phonemes(text, language)
         return self.vocab.encode(phones, add_bos_eos=add_bos_eos)
 
-    def __call__(self, text: str, language: Optional[str] = None) -> list[int]:
+    def __call__(self, text: str, language: str | None = None) -> list[int]:
         return self.encode(text, language)

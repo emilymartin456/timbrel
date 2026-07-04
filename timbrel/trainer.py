@@ -7,7 +7,7 @@ checkpointing schedules are left for later.
 
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from collections.abc import Iterable
 
 import torch
 
@@ -67,7 +67,7 @@ class Trainer:
         self.step += 1
         return breakdown
 
-    def fit(self, dataloader: Iterable[dict], max_steps: Optional[int] = None) -> list[dict]:
+    def fit(self, dataloader: Iterable[dict], max_steps: int | None = None) -> list[dict]:
         seed_everything(self.config.train.seed)
         max_steps = max_steps or self.config.train.max_steps
         self.model.train()

@@ -7,8 +7,6 @@ regulariser on the FiLM parameters. Padding is respected everywhere.
 
 from __future__ import annotations
 
-from typing import Optional
-
 import torch
 import torch.nn.functional as F
 from torch import nn
@@ -33,7 +31,7 @@ def _masked_mse_1d(pred: torch.Tensor, target: torch.Tensor, pad_mask: torch.Ten
 class TimbrelLoss(nn.Module):
     """Weighted sum of every training term; returns ``(total, breakdown)``."""
 
-    def __init__(self, config: Optional[TrainConfig] = None) -> None:
+    def __init__(self, config: TrainConfig | None = None) -> None:
         super().__init__()
         self.config = config or TrainConfig()
 

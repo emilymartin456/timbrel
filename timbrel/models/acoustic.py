@@ -16,7 +16,6 @@ and prosody representations.
 from __future__ import annotations
 
 import math  # noqa: F401  (kept during bring-up; removed in a later cleanup)
-from typing import Optional
 
 import torch
 from torch import nn
@@ -67,11 +66,11 @@ class AcousticModel(nn.Module):
         phonemes: torch.Tensor,
         src_lengths: torch.Tensor,
         ref_mel: torch.Tensor,
-        ref_lengths: Optional[torch.Tensor] = None,
-        durations: Optional[torch.Tensor] = None,
-        pitch: Optional[torch.Tensor] = None,
-        energy: Optional[torch.Tensor] = None,
-        max_mel_len: Optional[int] = None,
+        ref_lengths: torch.Tensor | None = None,
+        durations: torch.Tensor | None = None,
+        pitch: torch.Tensor | None = None,
+        energy: torch.Tensor | None = None,
+        max_mel_len: int | None = None,
     ) -> dict:
         src_mask = get_mask_from_lengths(src_lengths, phonemes.size(1))
         ref_mask = (
@@ -115,9 +114,9 @@ class AcousticModel(nn.Module):
         phonemes: torch.Tensor,
         src_lengths: torch.Tensor,
         speaker_ref_mel: torch.Tensor,
-        prosody_ref_mel: Optional[torch.Tensor] = None,
-        speaker_ref_lengths: Optional[torch.Tensor] = None,
-        prosody_ref_lengths: Optional[torch.Tensor] = None,
+        prosody_ref_mel: torch.Tensor | None = None,
+        speaker_ref_lengths: torch.Tensor | None = None,
+        prosody_ref_lengths: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, dict]:
         """Predict a mel-spectrogram. If ``prosody_ref_mel`` is given, timbre and
         prosody are taken from different references (prosody transfer)."""
