@@ -1,0 +1,53 @@
+# Timbrel 默认配置（base）。实验时建议基于本文件覆盖字段。
+audio:
+  sample_rate: 22050
+  n_fft: 1024
+  hop_length: 256
+  win_length: 1024
+  n_mels: 80
+  fmin: 0.0
+  fmax: 8000.0
+
+frontend:
+  language: auto      # auto | zh | en
+  insert_pause_on_punct: true
+  add_bos_eos: false
+
+model:
+  n_mels: 80
+  hidden: 256
+  n_enc_layers: 4
+  n_dec_layers: 4
+  n_heads: 2
+  ffn_kernel: 9
+  ffn_inner: 1024
+  dropout: 0.1
+  speaker_dim: 128
+  prosody_dim: 128
+  n_speakers: 64
+  variance_bins: 256
+  pitch_min: 0.0
+  pitch_max: 800.0
+  energy_min: 0.0
+  energy_max: 100.0
+  max_positions: 2048
+  grl_alpha: 1.0
+  use_club: true
+  vocab_size: 0        # 运行时由 phoneme 词表填充
+
+train:
+  lr: 1.0e-4
+  betas: [0.9, 0.98]
+  weight_decay: 0.0
+  batch_size: 16
+  grad_clip: 1.0
+  max_steps: 200000
+  warmup_steps: 4000
+  seed: 1234
+  lambda_mel: 1.0
+  lambda_duration: 1.0
+  lambda_pitch: 0.1
+  lambda_energy: 0.1
+  lambda_adv: 0.02
+  lambda_club: 0.01
+  lambda_film_reg: 1.0e-3

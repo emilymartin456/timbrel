@@ -7,7 +7,12 @@ code, serialised to YAML, and diffed easily in experiments.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any
+from pathlib import Path
+from typing import Any, Union
+
+import yaml
+
+PathLike = Union[str, Path]
 
 
 @dataclass
@@ -100,3 +105,16 @@ class Config:
             model=ModelConfig(**(data.get("model") or {})),
             train=TrainConfig(**(data.get("train") or {})),
         )
+
+
+def load_config(path: PathLike) -> Config:
+    """Read a YAML file into a :class:`Config`. Missing sections use defaults."""
+    text = Path(path).read_text(encoding="utf-8")
+    data = yaml.safe_load(text) or {}
+    return Config.from_dict(data)
+
+
+def save_config(config: Config, path: PathLike) -> None:
+    """Serialise a :class:`Config` back to YAML (utf-8, key order preserved)."""
+    dumped = yaml.safe_dump(config.to_dict(), sort_keys=False, allow_unicode=True)
+    Path(path).write_text(dumped, encoding="utf-8")
