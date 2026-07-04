@@ -11,10 +11,16 @@ from collections.abc import Sequence
 import numpy as np
 
 
-def frame_energy(log_mel: np.ndarray) -> np.ndarray:
+def frame_energy(log_mel: np.ndarray, floor: float = 1e-5) -> np.ndarray:
     """L2 energy per frame from a ``(n_mels, T)`` log-mel spectrogram."""
-    linear = np.exp(np.asarray(log_mel, dtype=np.float64))
-    return np.linalg.norm(linear, axis=0).astype(np.float32)
+    log_mel = np.asarray(log_mel, dtype=np.float64)
+    if log_mel.size == 0:
+        return np.zeros(log_mel.shape[-1] if log_mel.ndim else 0, dtype=np.float32)
+    # clip to keep exp() from overflowing on loud frames, and floor the result
+    # so silent frames stay at a small positive value instead of collapsing to 0
+    linear = np.exp(np.clip(log_mel, -30.0, 20.0))
+    energy = np.linalg.norm(linear, axis=0)
+    return np.maximum(energy, floor).astype(np.float32)
 
 
 def extract_f0(
