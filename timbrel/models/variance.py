@@ -51,27 +51,17 @@ class LengthRegulator(nn.Module):
         durations: torch.Tensor,
         max_len: int | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
-        expanded: list[torch.Tensor] = []
-        lengths: list[int] = []
-        for seq, dur in zip(x, durations):
-            # NOTE: naive per-step expansion; replaced with a vectorised path later
-            pieces = []
-            for vec, d in zip(seq, dur):
-                d = int(d)
-                if d > 0:
-                    pieces.append(vec.unsqueeze(0).expand(d, -1))
-            if pieces:
-                repeated = torch.cat(pieces, dim=0)
-            else:
-                repeated = seq.new_zeros(0, seq.shape[-1])
-            expanded.append(repeated)
-            lengths.append(repeated.shape[0])
+        durations = durations.long().clamp(min=0)
+        # per-sample repeat_interleave replaces the old frame-by-frame python loop
+        expanded = [torch.repeat_interleave(seq, dur, dim=0) for seq, dur in zip(x, durations)]
+        lengths = torch.tensor([e.shape[0] for e in expanded], device=x.device, dtype=torch.long)
 
-        target = max_len or max(lengths) or 1
-        out = x.new_zeros(len(expanded), target, x.shape[-1])
+        target = max_len or int(lengths.max().item()) or 1
+        out = x.new_zeros(x.shape[0], target, x.shape[-1])
         for i, seq in enumerate(expanded):
-            out[i, : seq.shape[0]] = seq[:target]
-        return out, torch.tensor(lengths, device=x.device, dtype=torch.long)
+            length = min(seq.shape[0], target)
+            out[i, :length] = seq[:length]
+        return out, lengths
 
 
 class VarianceEmbedding(nn.Module):
