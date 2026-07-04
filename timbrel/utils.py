@@ -18,9 +18,7 @@ def seed_everything(seed: int = 1234) -> None:
         torch.cuda.manual_seed_all(seed)
 
 
-def get_mask_from_lengths(
-    lengths: torch.Tensor, max_len: int | None = None
-) -> torch.Tensor:
+def get_mask_from_lengths(lengths: torch.Tensor, max_len: int | None = None) -> torch.Tensor:
     """Build a padding mask from a batch of sequence lengths.
 
     Returns a bool tensor of shape ``(B, max_len)`` that is ``True`` at

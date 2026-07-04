@@ -101,8 +101,12 @@ class VarianceAdaptor(nn.Module):
         self.duration_predictor = DurationPredictor(h)
         self.pitch_predictor = VariancePredictor(h)
         self.energy_predictor = VariancePredictor(h)
-        self.pitch_embed = VarianceEmbedding(config.variance_bins, h, config.pitch_min, config.pitch_max)
-        self.energy_embed = VarianceEmbedding(config.variance_bins, h, config.energy_min, config.energy_max)
+        self.pitch_embed = VarianceEmbedding(
+            config.variance_bins, h, config.pitch_min, config.pitch_max
+        )
+        self.energy_embed = VarianceEmbedding(
+            config.variance_bins, h, config.energy_min, config.energy_max
+        )
         self.length_regulator = LengthRegulator()
 
     def forward(

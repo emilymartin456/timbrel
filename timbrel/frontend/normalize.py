@@ -15,9 +15,26 @@ _CN_DIGITS = "零一二三四五六七八九"
 _CN_UNITS = ["", "十", "百", "千"]
 
 _EN_ONES = [
-    "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
-    "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-    "sixteen", "seventeen", "eighteen", "nineteen",
+    "zero",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+    "fourteen",
+    "fifteen",
+    "sixteen",
+    "seventeen",
+    "eighteen",
+    "nineteen",
 ]
 _EN_TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
 

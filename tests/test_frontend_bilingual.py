@@ -9,7 +9,14 @@ def test_pure_chinese():
 def test_pure_english():
     f = BilingualFrontend()
     assert f.to_phonemes("hello world", language="en") == [
-        "HH", "AH", "L", "OW", "W", "ER", "L", "D",
+        "HH",
+        "AH",
+        "L",
+        "OW",
+        "W",
+        "ER",
+        "L",
+        "D",
     ]
 
 

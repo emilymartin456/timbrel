@@ -35,9 +35,7 @@ class SpeakerEncoder(nn.Module):
         self.dropout = nn.Dropout(dropout)
         self.proj = LinearNorm(hidden, speaker_dim)
 
-    def forward(
-        self, ref_mel: torch.Tensor, ref_mask: torch.Tensor | None = None
-    ) -> torch.Tensor:
+    def forward(self, ref_mel: torch.Tensor, ref_mask: torch.Tensor | None = None) -> torch.Tensor:
         x = ref_mel.transpose(1, 2)  # (B, n_mels, T)
         for conv in self.convs:
             x = self.dropout(torch.relu(conv(x)))
