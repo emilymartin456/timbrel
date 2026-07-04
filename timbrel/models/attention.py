@@ -29,7 +29,9 @@ class MultiHeadAttention(nn.Module):
         self.out_proj = LinearNorm(d_model, d_model)
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, x: torch.Tensor, key_padding_mask: torch.Tensor | None = None) -> torch.Tensor:
+    def forward(
+        self, x: torch.Tensor, key_padding_mask: torch.Tensor | None = None
+    ) -> torch.Tensor:
         b, t, _ = x.shape
         shape = (b, t, self.n_heads, self.d_head)
         q = self.q_proj(x).view(*shape).transpose(1, 2)  # (B, H, T, Dh)
@@ -80,7 +82,9 @@ class FFTBlock(nn.Module):
         self.norm_2 = nn.LayerNorm(d_model)
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, x: torch.Tensor, key_padding_mask: torch.Tensor | None = None) -> torch.Tensor:
+    def forward(
+        self, x: torch.Tensor, key_padding_mask: torch.Tensor | None = None
+    ) -> torch.Tensor:
         x = self.norm_1(x + self.dropout(self.attn(x, key_padding_mask)))
         x = self.norm_2(x + self.ffn(x))
         if key_padding_mask is not None:
