@@ -36,7 +36,7 @@ MANDARIN_FINAL_BASES = [
     "an", "en", "ang", "eng", "ong", "er",
     "ia", "ie", "iao", "iu", "ian", "in", "iang", "ing", "iong",
     "ua", "uo", "uai", "ui", "uan", "un", "uang", "ueng",
-    "ve", "van", "vn", "io",
+    "ve", "van", "vn", "io", "ue",
 ]
 
 TONES = ["1", "2", "3", "4", "5"]  # 5 == neutral tone (轻声)
